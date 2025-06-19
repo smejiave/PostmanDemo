@@ -1,0 +1,409 @@
+{
+	"info": {
+		"_postman_id": "475ffd2b-52c3-44ed-b6c3-5ab92a9751a5",
+		"name": "Pruebas_API_Aut",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17688006"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "POST /auth/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validamos el estado",
+									"pm.test(\"CP01 Validar que el codigo de respuesta es 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Validamos el token",
+									"pm.test(\"CP02 Validar que se retorna un Token\", () => {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"token\");",
+									"    pm.environment.set(\"auth_token\", jsonData.token);",
+									"});",
+									"",
+									"//Validamos el tiempo de respuesta",
+									"pm.test(\"CP03 Validar que el tiempo de respuesta esta por debajo de 2000ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "https://fakestoreapi.com/auth/login",
+							"protocol": "https",
+							"host": [
+								"fakestoreapi",
+								"com"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /auth/login-F",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"CP04 Validar el codigo de respuesta 401 cuando el la informacion es incorrecta\", () => {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"const responseText = pm.response.text();",
+									"pm.test(\"CP05 Validar que el mensaje de error es ' username or password is incorrect'\", () => {",
+									"    pm.expect(responseText).to.eql(\"username or password is incorrect\");",
+									"});",
+									"",
+									"//Validamos el tiempo de respuesta",
+									"pm.test(\"CP06 Validar que el tiempo de respuesta esta por debajo de 2000ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"mor_2314\",\n    \"password\": \"password_invalido\"\n}"
+						},
+						"url": {
+							"raw": "https://fakestoreapi.com/auth/login",
+							"protocol": "https",
+							"host": [
+								"fakestoreapi",
+								"com"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "POST /users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validamos el cidgo de respuesta",
+									"pm.test(\"CP07 Validar que el codigo de respuesta es 200 or 201\", () => {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"//Validamos que el response contiene el id",
+									"pm.test(\"CP08 Validar que el response contiene el userID\", () => {",
+									"    pm.expect(pm.response.json()).to.have.property(\"id\");",
+									"});",
+									"",
+									"//Validamos el tiempo de respuesta",
+									"pm.test(\"CP09 Validar que el tiempo de respuesta esta por debajo de 2000ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"username\": \"testuser\",\n    \"password\": \"testpass\",\n    \"name\": {\n        \"firstname\": \"Maria\",\n        \"lastname\": \"Mendoza\"\n    },\n    \"address\": {\n        \"city\": \"San Francisco\",\n        \"street\": \"Market\",\n        \"number\": 10\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://fakestoreapi.com/users",
+							"protocol": "https",
+							"host": [
+								"fakestoreapi",
+								"com"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "GET /products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validamos el estado de la respuesta",
+									"pm.test(\"CP10 Validar que el codigo de respuesta es 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Validamos que el response es un array",
+									"pm.test(\"CP11 Validar que el response es un array\", () => {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});",
+									"",
+									"//Validamos que cada producto tenga los campos clave",
+									"pm.test(\"CP12 Validar que cada producto tiene las filas requeridas\", () => {",
+									"    const products = pm.response.json();",
+									"    products.forEach(product => {",
+									"        pm.expect(product).to.have.property(\"id\");",
+									"        pm.expect(product).to.have.property(\"title\");",
+									"        pm.expect(product).to.have.property(\"price\");",
+									"        pm.expect(product).to.have.property(\"category\");",
+									"        pm.expect(product).to.have.property(\"image\");",
+									"    });",
+									"});",
+									"",
+									"//Validamos el tiempo de respuesta",
+									"pm.test(\"CP13 Validar que el tiempo de respuesta esta por debajo de 2000ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fakestoreapi.com/products",
+							"protocol": "https",
+							"host": [
+								"fakestoreapi",
+								"com"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /products/{id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validamos el codigo de respuesta",
+									"pm.test(\"CP14 Validar que el codigo de respuesta es 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"CP15 Validamos que el id consultado es correcto : 1 \", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"CP16 Validamos que el precio del producto consultado es correcto\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.price).to.eql(109.95);",
+									"});",
+									"",
+									"//Validamos los atributos del response",
+									"pm.test(\"CP17 Validar que el response tiene los atributos correctos\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData).to.have.property(\"title\");",
+									"    pm.expect(jsonData).to.have.property(\"description\");",
+									"    pm.expect(jsonData).to.have.property(\"price\");",
+									"    pm.expect(jsonData).to.have.property(\"category\");",
+									"});",
+									"",
+									"//Validamos el tiempo de respuesta",
+									"pm.test(\"CP18 Validar que el tiempo de respuesta esta por debajo de 2000ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fakestoreapi.com/products/1",
+							"protocol": "https",
+							"host": [
+								"fakestoreapi",
+								"com"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carts",
+			"item": [
+				{
+					"name": "GET /carts/user/2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validamos el codigo de respuesta",
+									"pm.test(\"CP19 Validar que el codigo de respuesta es 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//Validamos que la respuesta devuelve un array",
+									"pm.test(\"CP20 Validar que el response nos devuelve un array\", () => {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});",
+									"",
+									"//Validamos el contenido de la respuesta",
+									"pm.test(\"CP21 Validar que cada carro contiene las filas esperadas\", () => {",
+									"    const carts = pm.response.json();",
+									"    carts.forEach(cart => {",
+									"        pm.expect(cart).to.have.property(\"id\");",
+									"        pm.expect(cart).to.have.property(\"userId\");",
+									"        pm.expect(cart).to.have.property(\"date\");",
+									"        pm.expect(cart).to.have.property(\"products\");",
+									"    });",
+									"});",
+									"",
+									"//Validamos el tiempo de respuesta",
+									"pm.test(\"CP22 El tiempo de respuesta es menor a 2000ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://fakestoreapi.com/carts/user/2",
+							"protocol": "https",
+							"host": [
+								"fakestoreapi",
+								"com"
+							],
+							"path": [
+								"carts",
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "{{username}}",
+			"value": "mor_2314",
+			"type": "string"
+		},
+		{
+			"key": "{{password}}",
+			"value": "83r5^_",
+			"type": "string"
+		}
+	]
+}
